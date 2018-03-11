@@ -31,7 +31,7 @@ spec:
           {{ kubernetes_radarr_resources | to_yaml | indent(10) }}
         ports:
         - name: radarr
-          containerPort: 7878:7878
+          containerPort: 7878
         livenessProbe:
           tcpSocket:
             port: radarr

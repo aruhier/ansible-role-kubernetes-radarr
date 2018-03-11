@@ -1,0 +1,11 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: {{ kubernetes_radarr_service }}
+  namespace: {{ kubernetes_radarr_namespace }}
+spec:
+  selector:
+    app: {{ kubernetes_radarr_app }}
+  ports:
+    - port: 80
+      targetPort: radarr

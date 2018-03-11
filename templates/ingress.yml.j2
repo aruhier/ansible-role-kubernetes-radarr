@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ kubernetes_radarr_ingress.name }}
+  namespace: {{ kubernetes_radarr_namespace }}
+{% if kubernetes_radarr_ingress.annotations %}
+  annotations:
+    {{ kubernetes_radarr_ingress.annotations | to_nice_yaml | indent }}
+{% endif %}
+spec:
+{% if kubernetes_radarr_ingress.tls %}
+  tls:
+    {{ kubernetes_radarr_ingress.tls | to_nice_yaml | indent }}
+{% endif %}
+  rules:
+  - host: {{ kubernetes_radarr_ingress.host }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ kubernetes_radarr_service }}
+          servicePort: 80

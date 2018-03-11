@@ -1,0 +1,79 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ kubernetes_radarr_deployment }}
+  namespace: {{ kubernetes_radarr_namespace }}
+  labels:
+    app: {{ kubernetes_radarr_app }}
+{% if kubernetes_radarr_deployment_labels %}
+    {{ kubernetes_radarr_deployment_labels | to_nice_yaml | indent(4) }}
+{% endif %}
+{% if kubernetes_radarr_deployment_annotations %}
+  annotations:
+    {{ kubernetes_radarr_deployment_annotations | to_nice_yaml | indent(4) }}
+{% endif %}
+spec:
+  replicas: {{ kubernetes_radarr_replicas }}
+  revisionHistoryLimit: {{ kubernetes_radarr_revision_history }}
+  selector:
+    matchLabels:
+      app: {{ kubernetes_radarr_app }}
+  template:
+    metadata:
+      labels:
+        app: {{ kubernetes_radarr_app }}
+    spec:
+      containers:
+      - image: {{ kubernetes_radarr_image }}
+        imagePullPolicy: Always
+        name: radarr
+        resources:
+          {{ kubernetes_radarr_resources | to_yaml | indent(10) }}
+        ports:
+        - name: radarr
+          containerPort: 7878:7878
+        livenessProbe:
+          tcpSocket:
+            port: radarr
+          initialDelaySeconds: 60
+          periodSeconds: 10
+        volumeMounts:
+        - mountPath: /config
+          name: radarr-config
+          {% if kubernetes_radarr_config_volume.subPath is defined %}subPath: {{ kubernetes_radarr_config_volume.subPath }}{% endif %}
+
+{% for k, v in kubernetes_radarr_downloads_volumes.items() %}
+        - mountPath: /downloads/{{ k }}
+          name: radarr-downloads-{{ k }}
+          {% if v.subPath is defined %}subPath: {{ v.subPath }}{% endif %}
+
+{% endfor %}
+{% for k, v in kubernetes_radarr_movies_volumes.items() %}
+        - mountPath: /movies/{{ k }}
+          name: radarr-movies-{{ k }}
+          {% if v.subPath is defined %}subPath: {{ v.subPath }}{% endif %}
+
+{% endfor %}
+{% for k, v in kubernetes_radarr_watchdirs_volumes.items() %}
+        - mountPath: /watchdirs/{{ k }}
+          name: radarr-watchdirs-{{ k }}
+          {% if v.subPath is defined %}subPath: {{ v.subPath }}{% endif %}
+
+{% endfor %}
+{% if kubernetes_radarr_node_selector|default({}) %}
+      nodeSelector:
+        {{ kubernetes_radarr_node_selector | to_yaml | indent(8) }}
+{% endif %}
+      volumes:
+      - {name: radarr-config, {{ kubernetes_radarr_config_volume.definition | to_yaml }}}
+{% for k, v in kubernetes_radarr_downloads_volumes.items() %}
+      - {name: radarr-downloads-{{ k }}, {{ v.definition | to_yaml }}}
+{% endfor %}
+{% for k, v in kubernetes_radarr_movies_volumes.items() %}
+      - {name: radarr-movies-{{ k }}, {{ v.definition | to_yaml }}}
+{% endfor %}
+{% for k, v in kubernetes_radarr_watchdirs_volumes.items() %}
+      - {name: radarr-watchdirs-{{ k }}, {{ v.definition | to_yaml }}}
+{% endfor %}
+      restartPolicy: Always
+status: {}

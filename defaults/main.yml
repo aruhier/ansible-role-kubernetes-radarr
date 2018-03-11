@@ -1,0 +1,37 @@
+---
+
+kubernetes_radarr_image: "linuxserver/radarr:latest"
+
+kubernetes_radarr_namespace: "default"
+kubernetes_radarr_deployment: "radarr-deployment"
+kubernetes_radarr_app: "radarr"
+kubernetes_radarr_service: "radarr"
+
+kubernetes_radarr_node_selector: {}
+kubernetes_radarr_replicas: 1
+kubernetes_radarr_revision_history: 1
+
+kubernetes_radarr_deployment_labels: {}
+kubernetes_radarr_deployment_annotations: {}
+
+kubernetes_radarr_resources:
+  limits:
+    memory: "756Mi"
+  requests:
+    memory: "256Mi"
+
+kubernetes_radarr_downloads_volumes: {}
+kubernetes_radarr_movies_volumes: {}
+kubernetes_radarr_watchdirs_volumes: {}
+
+kubernetes_radarr_config_volume:
+  definition:
+
+kubernetes_radarr_setup_ingress: false
+kubernetes_radarr_ingress:
+  name: "radarr-ingress"
+  host: "radarr.example.com"
+  annotations:
+  tls:
+
+# vim: set ts=2 sw=2:

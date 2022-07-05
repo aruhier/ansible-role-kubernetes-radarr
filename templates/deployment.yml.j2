@@ -15,6 +15,8 @@ metadata:
 spec:
   replicas: {{ kubernetes_radarr_replicas }}
   revisionHistoryLimit: {{ kubernetes_radarr_revision_history }}
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: {{ kubernetes_radarr_app }}

@@ -1,6 +1,6 @@
 ---
 
-kubernetes_radarr_image: "linuxserver/radarr:latest"
+kubernetes_radarr_image: "lscr.io/linuxserver/radarr:latest"
 
 kubernetes_radarr_namespace: "default"
 kubernetes_radarr_deployment: "radarr-deployment"
